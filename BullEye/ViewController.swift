@@ -12,8 +12,12 @@ class ViewController: UIViewController {
     
     var currentValue: Int = 50
     var targetValue: Int = 0
+    var score = 0
+    var round = 0
     @IBOutlet weak var slider : UISlider!
     @IBOutlet weak var targetLabel : UILabel!
+    @IBOutlet weak var scoreLabel : UILabel!
+    @IBOutlet weak var roundLabel : UILabel!
     
     func startNewRound(){
         targetValue = 1 + Int(arc4random_uniform(100))
@@ -23,6 +27,8 @@ class ViewController: UIViewController {
     
     func updateLabels(){
         targetLabel.text = String(targetValue)
+        scoreLabel.text = String(score)
+        roundLabel.text = String(round)
     }
 
 
@@ -39,17 +45,23 @@ class ViewController: UIViewController {
     }
     
     @IBAction func showAlert(){
-        let message = "The value of the slider is: \(currentValue)" + "\nThe target value is: \(targetValue)"
+        round += 1
+        let difference = abs(targetValue - currentValue)
+        let points = 100 - difference
+        
+        score += points
+        
+        let message = "The value of the slider is: \(currentValue)" + "\nThe target value is: \(targetValue)" +
+            "\nThe difference is: \(difference)"
         
         let alert = UIAlertController(title: "Hello, Word", message:message, preferredStyle: .alert)
         
-        let action = UIAlertAction(title:"Awesome", style: .default, handler: nil)
+        let action = UIAlertAction(title:"Awesome", style: .default, handler: {action in self.startNewRound(); self.updateLabels()})
         
         alert.addAction(action)
         
         present(alert, animated: true, completion: nil)
-        startNewRound()
-        updateLabels()
+
     }
     
     @IBAction func sliderMoved(_ slider: UISlider){
